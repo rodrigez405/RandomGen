@@ -1,0 +1,97 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+#  bez nazwy.py
+#  
+#  Copyright 2014 pepcio03 <piotrk0303@gmail.com>
+#  
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#  
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#  
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+#  
+#  
+
+import random
+import math as m
+import scipy as sp
+import os
+
+def main():
+
+	liczbaosob = 200
+	k = 10
+	sciezkapliku = "losowo4.txt"
+	
+	symptomyy = ("bladosc","zawroty glowy","mroczki","dusznosci","szybkie bicie serca","uczucie goraca","szum w uszach","bol glowy","nudnosci","poty","utrata")
+	psymp = (0.0,0.27,0.0,0.23,0.0,0.0,0.02,0.0,0.13,0.0,0.0)
+	
+	osobylista = range(liczbaosob)
+	osoby = []
+	symptomy = {}
+	procentsymp = {}
+	
+	q=0
+	for symptom in symptomyy:
+		
+		procentsymp[symptom] = psymp[q]
+		q = q + 1
+		symptomy[symptom] = 0	
+		
+	for l in osobylista:
+		osoby.append([])
+		
+	
+	i = 0;
+	
+	for symptom in symptomy:
+		alist = random.sample(osobylista,int(liczbaosob*procentsymp[symptom]));
+		alist.sort();
+		i = i + 1;
+		#~ print symptom 
+		for osb in alist:
+			osoby[osb].append(symptom)
+			#~ print osb
+	
+	l = liczbaosob/k
+	
+	if os.path.isfile(sciezkapliku):
+		os.unlink(sciezkapliku)
+	f = open(sciezkapliku, 'a')	
+	for symptom in symptomyy:
+		f.write(symptom)
+		if symptom != symptomyy[-1]:
+			f.write(u';')
+			
+	for j in range(l):
+		for iosoba in osoby[(0+(j*k)):(k+(j*k))]:
+		#~ for iosoba in osoby:
+			for isymptom in iosoba:
+				for ilista in symptomy:
+					if isymptom == ilista:
+						symptomy[isymptom] = symptomy[isymptom] + 1			
+		f.write("\n")
+		for symptom in symptomyy:
+			symptomy[symptom] = 1.0*symptomy[symptom]/k
+			#~ print symptomy[symptom]
+			f.write(u'%.2f ' % symptomy[symptom])
+			symptomy[symptom] = 0
+		#~ print "--------"
+		
+	f.close
+		
+	return 0
+
+if __name__ == '__main__':
+	main()
+
